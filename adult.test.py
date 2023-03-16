@@ -99,7 +99,6 @@ class TestAdult(unittest.TestCase):
       received = adult.dt_error_rate(y_pred, y_train)
       expected = 0.08279156162929546
 
-
       self.assertEqual(received, expected)
 
 
