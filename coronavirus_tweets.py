@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
+from sklearn.naive_bayes import MultinomialNB
 
 # Part 3: Mining text data.
 
@@ -88,7 +89,8 @@ def stemming(tdf):
 # Return predicted sentiments (e.g. 'Neutral', 'Positive') for the training set
 # as a 1d array (numpy.ndarray).
 def mnb_predict(df):
-	pass
+	clf = MultinomialNB(force_alpha=True)
+	clf.fit(X, y)
 
 # Given a 1d array (numpy.ndarray) y_pred with predicted labels (e.g. 'Neutral', 'Positive')
 # by a classifier and another 1d array y_true with the true labels,

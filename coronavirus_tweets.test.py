@@ -118,17 +118,20 @@ class TestCoronavirusTweets(unittest.TestCase):
       self.assertEqual(received_first_row, expected_values)
 
     def test_stemming(self):
-      expected = self.csv.copy()
-      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('ing', '')
+      expected_value = ['menyrbi', 'phil', 'gahan', 'chrisitv', 'http', 'ifz', 'fan', 'http', 'ghgfzcc', 'http', 'nlzdxno']
+      expected_length = 11
 
       input_args = coronavirus_tweets.lower_case(self.csv)
       input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
       input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
       input_args = coronavirus_tweets.tokenize(input_args)
+      input_args = coronavirus_tweets.remove_stop_words(input_args)
 
       received = coronavirus_tweets.stemming(input_args)
+      received_value = received['OriginalTweet'].iloc[0]
 
-      self.assertEqual(expected.to_json(), received.to_json())
+      self.assertEqual(expected_value, received_value)
+      self.assertEqual(len(received_value), expected_length)
 
 
 # driver code
