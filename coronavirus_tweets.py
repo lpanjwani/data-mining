@@ -3,6 +3,8 @@ import requests
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import accuracy_score
 
 # Part 3: Mining text data.
 
@@ -89,11 +91,19 @@ def stemming(tdf):
 # Return predicted sentiments (e.g. 'Neutral', 'Positive') for the training set
 # as a 1d array (numpy.ndarray).
 def mnb_predict(df):
+	words = df['OriginalTweet'].to_numpy()
+	vectorizer = CountVectorizer(ngram_range=(3, 5))
+
+	X = vectorizer.fit_transform(words)
+	y = df['Sentiment'].values
+
 	clf = MultinomialNB(force_alpha=True)
 	clf.fit(X, y)
+
+	return clf.predict(X)
 
 # Given a 1d array (numpy.ndarray) y_pred with predicted labels (e.g. 'Neutral', 'Positive')
 # by a classifier and another 1d array y_true with the true labels,
 # return the classification accuracy rounded in the 3rd decimal digit.
 def mnb_accuracy(y_pred,y_true):
-	pass
+	return round(accuracy_score(y_true, y_pred), 3)

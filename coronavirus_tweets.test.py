@@ -133,6 +133,22 @@ class TestCoronavirusTweets(unittest.TestCase):
       self.assertEqual(expected_value, received_value)
       self.assertEqual(len(received_value), expected_length)
 
+    def test_mnb_predict(self):
+      expected = len(self.csv["Sentiment"])
+      received = coronavirus_tweets.mnb_predict(self.csv)
+
+      self.assertEqual(expected, len(received))
+
+    def test_mnb_accuracy(self):
+      expected = 0.995
+
+      predict_values = coronavirus_tweets.mnb_predict(self.csv)
+
+      received = coronavirus_tweets.mnb_accuracy(predict_values, self.csv["Sentiment"].values)
+
+      self.assertEqual(expected, received)
+
+
 
 # driver code
 if __name__ == '__main__':
