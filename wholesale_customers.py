@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.metrics import silhouette_score
 
@@ -7,7 +8,7 @@ from sklearn.metrics import silhouette_score
 # Return a pandas dataframe containing the data set that needs to be extracted from the data_file.
 # data_file will be populated with the string 'wholesale_customers.csv'.
 def read_csv_2(data_file):
-	return pd.read_csv(data_file).drop(columns=['Channel', 'Region'])
+	return pd.read_csv(data_file).drop(columns=['Channel', 'Region'], axis=1)
 
 # Return a pandas dataframe with summary statistics of the data.
 # Namely, 'mean', 'std' (standard deviation), 'min', and 'max' for each attribute.
@@ -55,6 +56,7 @@ def clustering_score(X,y):
 # 'k': the number of clusters produced,
 # 'Silhouette Score': for evaluating the resulting set of clusters.
 def cluster_evaluation(df):
+	nIterations = 10
 	kValues = [3, 5, 10]
 
 	rdf = pd.DataFrame({
@@ -65,22 +67,6 @@ def cluster_evaluation(df):
 	})
 
 	for kValue in kValues:
-		kMeansOriginal = kmeans(df, kValue)
-		rdf = rdf.append({
-			'Algorithm': "Kmeans",
-            'data': "Original",
-			'k': kValue,
-            'Silhouette Score': clustering_score(df, kMeansOriginal)
-        }, ignore_index=True)
-
-		kMeansStandardized = kmeans(standardize(df), kValue)
-		rdf = rdf.append({
-			'Algorithm': "Kmeans",
-			'data': "Standardized",
-			'k': kValue,
-			'Silhouette Score': clustering_score(standardize(df), kMeansStandardized)
-        }, ignore_index=True)
-
 		AgglomerativeOriginal = agglomerative(df, kValue)
 		rdf = rdf.append({
 			'Algorithm': "Agglomerative",
@@ -97,6 +83,24 @@ def cluster_evaluation(df):
 			'Silhouette Score': clustering_score(standardize(df), AgglomerativeStandardized)
         }, ignore_index=True)
 
+		for n in range(nIterations):
+			kMeansOriginal = kmeans(df, kValue)
+			rdf = rdf.append({
+				'Algorithm': "Kmeans",
+				'data': "Original",
+				'k': kValue,
+				'Silhouette Score': clustering_score(df, kMeansOriginal)
+			}, ignore_index=True)
+
+			kMeansStandardized = kmeans(standardize(df), kValue)
+			rdf = rdf.append({
+				'Algorithm': "Kmeans",
+				'data': "Standardized",
+				'k': kValue,
+				'Silhouette Score': clustering_score(standardize(df), kMeansStandardized)
+			}, ignore_index=True)
+
+
 	return rdf
 
 # Given the performance evaluation dataframe produced by the cluster_evaluation function,
@@ -107,4 +111,16 @@ def best_clustering_score(rdf):
 # Run some clustering algorithm of your choice with k=3 and generate a scatter plot for each pair of attributes.
 # Data points in different clusters should appear with different colors.
 def scatter_plots(df):
-	pass
+	kMeans = kmeans(df, 3)
+	df['Cluster'] = kMeans
+
+	fig, axes = plt.subplots(nrows=len(df.columns), ncols=len(df.columns), figsize=(50, 50))
+
+	for x_index, x in enumerate(df.columns):
+		for y_index, y in enumerate(df.columns):
+			if x == y:
+				continue
+
+			df.plot.scatter(x=x, y=y, c=df['Cluster'], colormap='viridis', ax=axes[x_index, y_index], title=x + " vs " + y, xlabel=x, ylabel=y)
+
+	fig.savefig('scatter_plots.png', bbox_inches='tight', pad_inches=0) # TODO: Verify this is the correct way to save the figure

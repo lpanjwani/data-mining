@@ -57,13 +57,20 @@ class TestWholesaleCustomers(unittest.TestCase):
 
     # TODO: Create this test after verification
     def test_cluster_evaluation(self):
+        expected = 66
         received = wholesale_customers.cluster_evaluation(self.csv)
 
-        # self.assertEqual(received.to_json(), expected.to_json())
+        self.assertEqual(expected, len(received))
 
-    def best_clustering_score(self):
+    def test_best_clustering_score(self):
         expected = 0.542401
         received = wholesale_customers.best_clustering_score(wholesale_customers.cluster_evaluation(self.csv))
+
+        self.assertEqual(received, expected)
+
+    def test_scatter_plots(self):
+        expected = 0
+        received = wholesale_customers.scatter_plots(self.csv)
 
         self.assertEqual(received, expected)
 

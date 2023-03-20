@@ -51,3 +51,6 @@ docs/_build/
 
 # Conda Environment
 envs/
+
+# Images
+scatter_plots.png
