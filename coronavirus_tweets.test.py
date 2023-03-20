@@ -35,60 +35,100 @@ class TestCoronavirusTweets(unittest.TestCase):
       self.assertEqual(expected, received)
 
     def test_lower_case(self):
-      expected = self.csv['OriginalTweet'].str.lower()
+      expected = self.csv.copy()
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.lower()
+
       received = coronavirus_tweets.lower_case(self.csv)
 
       self.assertEqual(expected.to_json(), received.to_json())
 
     def test_remove_non_alphabetic_chars(self):
-      expected = self.csv['OriginalTweet'].str.replace('[^a-zA-Z\s]', ' ')
+      expected = self.csv.copy()
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('[^a-zA-Z\s]', ' ')
+
       received = coronavirus_tweets.remove_non_alphabetic_chars(self.csv)
 
       self.assertEqual(expected.to_json(), received.to_json())
 
     def test_remove_multiple_consecutive_whitespaces(self):
-      expected = self.csv['OriginalTweet'].str.replace('\s+', ' ')
+      expected = self.csv.copy()
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('\s+', ' ')
+
       received = coronavirus_tweets.remove_multiple_consecutive_whitespaces(self.csv)
 
       self.assertEqual(expected.to_json(), received.to_json())
 
     def test_tokenize(self):
-      expected = self.csv['OriginalTweet'].str.split()
+      expected = self.csv.copy()
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.split()
+
       received = coronavirus_tweets.tokenize(self.csv)
 
       self.assertEqual(expected.to_json(), received.to_json())
 
     def test_count_words_with_repetitions(self):
-      expected = 1255301 # TODO: Verify
-      received = coronavirus_tweets.count_words_with_repetitions(self.csv)
+      expected = 1350959
+
+      input_args = coronavirus_tweets.lower_case(self.csv)
+      input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
+      input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
+      input_args = coronavirus_tweets.tokenize(input_args)
+
+      received = coronavirus_tweets.count_words_with_repetitions(input_args)
 
       self.assertEqual(expected, received)
 
     def test_count_words_without_repetitions(self):
-      expected = 63 # TODO: Verify
-      received = coronavirus_tweets.count_words_without_repetitions(self.csv)
+      expected = 80071
+
+      input_args = coronavirus_tweets.lower_case(self.csv)
+      input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
+      input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
+      input_args = coronavirus_tweets.tokenize(input_args)
+
+      received = coronavirus_tweets.count_words_without_repetitions(input_args)
 
       self.assertEqual(expected, received)
 
     def test_frequent_words(self):
-      expected = ['the', 'to', 'and', 'of', 'on']
-      received = coronavirus_tweets.frequent_words(self.csv, 5)
+      expected = ['the', 'to', 't', 'co', 'and', 'https', 'covid', 'of', 'a', 'in']
+
+      input_args = coronavirus_tweets.lower_case(self.csv)
+      input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
+      input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
+      input_args = coronavirus_tweets.tokenize(input_args)
+
+      received = coronavirus_tweets.frequent_words(input_args, 10)
 
       self.assertEqual(expected, received)
 
     def test_remove_stopwords(self):
-      expected = self.csv['OriginalTweet'].str.replace('\bthe\b', '')
-      received = coronavirus_tweets.remove_stop_words(self.csv)
+      expected_length = 11
+      expected_values = ['menyrbie', 'phil', 'gahan', 'chrisitv', 'https', 'ifz', 'fan', 'https', 'ghgfzcc', 'https', 'nlzdxno']
 
-      self.assertEqual(expected.to_json(), received.to_json())
+      input_args = coronavirus_tweets.lower_case(self.csv)
+      input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
+      input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
+      input_args = coronavirus_tweets.tokenize(input_args)
+
+      received = coronavirus_tweets.remove_stop_words(input_args)
+      received_first_row = received['OriginalTweet'].iloc[0]
+
+      self.assertEqual(len(received_first_row), expected_length)
+      self.assertEqual(received_first_row, expected_values)
 
     def test_stemming(self):
-      expected = self.csv['OriginalTweet'].str.replace('ing', '')
-      received = coronavirus_tweets.stemming(self.csv)
+      expected = self.csv.copy()
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('ing', '')
+
+      input_args = coronavirus_tweets.lower_case(self.csv)
+      input_args = coronavirus_tweets.remove_non_alphabetic_chars(input_args)
+      input_args = coronavirus_tweets.remove_multiple_consecutive_whitespaces(input_args)
+      input_args = coronavirus_tweets.tokenize(input_args)
+
+      received = coronavirus_tweets.stemming(input_args)
 
       self.assertEqual(expected.to_json(), received.to_json())
-
-
 
 
 # driver code
