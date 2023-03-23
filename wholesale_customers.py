@@ -28,7 +28,7 @@ def standardize(df):
 # specifying an assignment of instances to clusters, using kmeans.
 # y should contain values in the set {0,1,...,k-1}.
 def kmeans(df, k):
-	return pd.Series(KMeans(n_clusters=k).fit(df).labels_)
+	return pd.Series(KMeans(n_clusters=k, n_init=10).fit(df).labels_)
 
 # Given a dataframe df and a number of clusters k, return a pandas series y
 # specifying an assignment of instances to clusters, using kmeans++.
