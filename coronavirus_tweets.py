@@ -33,12 +33,12 @@ def lower_case(df):
 
 # Modify the dataframe df by replacing each characters which is not alphabetic or whitespace with a whitespace.
 def remove_non_alphabetic_chars(df):
-	df["OriginalTweet"] = df["OriginalTweet"].str.replace('[^a-zA-Z\s]', ' ')
+	df["OriginalTweet"] = df["OriginalTweet"].str.replace('[^a-zA-Z\s]', ' ', regex=True)
 	return df
 
 # Modify the dataframe df with tweets after removing characters which are not alphabetic or whitespaces.
 def remove_multiple_consecutive_whitespaces(df):
-	df["OriginalTweet"] = df["OriginalTweet"].str.replace('\s+', ' ')
+	df["OriginalTweet"] = df["OriginalTweet"].str.replace('\s+', ' ', regex=True)
 	return df
 
 # Given a dataframe where each tweet is one string with words separated by single whitespaces,

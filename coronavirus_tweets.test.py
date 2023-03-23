@@ -44,7 +44,7 @@ class TestCoronavirusTweets(unittest.TestCase):
 
     def test_remove_non_alphabetic_chars(self):
       expected = self.csv.copy()
-      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('[^a-zA-Z\s]', ' ')
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('[^a-zA-Z\s]', ' ', regex=True)
 
       received = coronavirus_tweets.remove_non_alphabetic_chars(self.csv)
 
@@ -52,7 +52,7 @@ class TestCoronavirusTweets(unittest.TestCase):
 
     def test_remove_multiple_consecutive_whitespaces(self):
       expected = self.csv.copy()
-      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('\s+', ' ')
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('\s+', ' ', regex=True)
 
       received = coronavirus_tweets.remove_multiple_consecutive_whitespaces(self.csv)
 
