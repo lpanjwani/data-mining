@@ -123,4 +123,4 @@ def scatter_plots(df):
 
 			df.plot.scatter(x=x, y=y, c=df['Cluster'], colormap='viridis', ax=axes[x_index, y_index], title=x + " vs " + y, xlabel=x, ylabel=y)
 
-	fig.show()
+	fig.savefig('scatter_plots.png', bbox_inches='tight', pad_inches=0)
