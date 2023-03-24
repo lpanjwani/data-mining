@@ -111,16 +111,19 @@ def best_clustering_score(rdf):
 # Run some clustering algorithm of your choice with k=3 and generate a scatter plot for each pair of attributes.
 # Data points in different clusters should appear with different colors.
 def scatter_plots(df):
-	kMeans = kmeans(df, 3)
-	df['Cluster'] = kMeans
+	kMeans = KMeans(n_clusters=3, init='k-means++')
+	clusters = kMeans.fit_predict(df)
 
-	fig, axes = plt.subplots(nrows=len(df.columns), ncols=len(df.columns), figsize=(50, 50))
+	print(df.shape[1])
+	fig = plt.figure(figsize=(50, 50))
 
-	for x_index, x in enumerate(df.columns):
-		for y_index, y in enumerate(df.columns):
-			if x == y:
-				continue
+	for x_index in range(df.shape[1]):
+		for y_index in range(1 + x_index, df.shape[1]):
+			current_fig = fig.add_subplot(df.shape[1], df.shape[1], 1 + x_index + y_index * df.shape[1])
 
-			df.plot.scatter(x=x, y=y, c=df['Cluster'], colormap='viridis', ax=axes[x_index, y_index], title=x + " vs " + y, xlabel=x, ylabel=y)
+			current_fig.scatter(df.iloc[:, x_index], df.iloc[:, y_index], c=clusters, cmap='viridis')
+
+			center_points = kMeans.cluster_centers_
+			current_fig.scatter(center_points[:, x_index], center_points[:, y_index], c='red', marker='x', s=200)
 
 	fig.savefig('scatter_plots.png', bbox_inches='tight', pad_inches=0)
