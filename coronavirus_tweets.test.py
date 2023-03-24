@@ -44,7 +44,7 @@ class TestCoronavirusTweets(unittest.TestCase):
 
     def test_remove_non_alphabetic_chars(self):
       expected = self.csv.copy()
-      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('[^a-zA-Z\s]', ' ', regex=True)
+      expected['OriginalTweet'] = expected['OriginalTweet'].str.replace('[^a-zA-Z\s]+', ' ', regex=True)
 
       received = coronavirus_tweets.remove_non_alphabetic_chars(self.csv)
 
