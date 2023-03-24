@@ -92,7 +92,7 @@ def stemming(tdf):
 # as a 1d array (numpy.ndarray).
 def mnb_predict(df):
 	words = df['OriginalTweet'].to_numpy()
-	vectorizer = CountVectorizer(ngram_range=(3, 5))
+	vectorizer = CountVectorizer(ngram_range=(1, 3), max_features=None, min_df=0.000003, max_df=0.00007)
 
 	X = vectorizer.fit_transform(words)
 	y = df['Sentiment'].values

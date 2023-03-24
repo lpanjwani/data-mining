@@ -140,7 +140,7 @@ class TestCoronavirusTweets(unittest.TestCase):
       self.assertEqual(expected, len(received))
 
     def test_mnb_accuracy(self):
-      expected = 0.995
+      expected = 0.997
 
       predict_values = coronavirus_tweets.mnb_predict(self.csv)
 
